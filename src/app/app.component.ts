@@ -15,54 +15,34 @@ import { AppService } from './app.service';
 export class AppComponent implements OnInit  {
   constructor(private title: Title, private appService: AppService) {}
 
-  countries: any[] = [];
   country: any[] = [];
-  country1: any[] = [];
-
   state: any[] = [];
+  city: any[] = [];
 
   ngOnInit() {
-    this.title.setTitle('Angular Cascading or Dependent Dropdown');
     this.appService.getCountries().subscribe(data => {
-      this.country = data;  // Assign the fetched countries to the local array
+      this.country = data;
     });
-
-    console.log( this.country);
-
-
-    this.appService.getCountry().subscribe(data => {
-      this.country1 = data;  // Assign the fetched countries to the local array
-    });
-
-    console.log( this.country1);
-
-
-    this.appService.getStatesByCountryId(101).subscribe(data => {
-      this.state = data;  // Assign the fetched countries to the local array
-    });
-
-    console.log( this.state);
   }
 	
 	selectedCountry: String = "--Choose Country--";
-  
-	Countries: Array<any> = [
-		{ name: 'Germany', states: [ {name: 'A', cities: ['Duesseldorf', 'Leinfelden-Echterdingen', 'Eschborn']} ] },
-		{ name: 'Spain', states: [ {name: 'B', cities: ['Barcelona']} ] },
-		{ name: 'USA', states: [ {name: 'C', cities: ['Downers Grove']} ] },
-		{ name: 'Mexico', states: [ {name: 'D', cities: ['Puebla']} ] },
-		{ name: 'India', states: [ {name: 'E', cities: ['Delhi', 'Kolkata', 'Mumbai', 'Bangalore']} ] },
-	];
-  
-	states: Array<any> = [];
-
-	cities: Array<any> = [];
+  selectedState: String = "--Choose State--";
+  selectedCity: String = "--Choose City--";
 	
 	changeCountry(country: any) {
-		this.states = this.Countries.find((cntry: any) => cntry.name == country.target.value).states;
+
+    this.appService.getStatesByCountryName(this.selectedCountry.toString()).subscribe(data => {
+      this.state = data;
+    });
 	}
 
 	changeState(state: any) {
-		this.cities = this.Countries.find((cntry: any) => cntry.name == this.selectedCountry).states.find((stat: any) => stat.name == state.target.value).cities;
+    this.appService.getCitiesByStateName(this.selectedState.toString()).subscribe(data => {
+      this.city = data;
+    });
+	}
+
+	changeCity(city: any) {
+    // API call to save cities.
 	}
 }
